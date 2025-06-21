@@ -1,0 +1,4 @@
+HTTP_REQUEST,SCENARIOS,API,USERNAME,PASSWORD,HOST,END_PATH,PATH,FEATURE,PAYLOAD_JSON_PATH,ASSERTIONS
+POST,Login,https://uatnode.kolonizer.in/master/api/signIn,nikhil@kolonizer.com,123,uatnode.kolonizer.in,/master/api/signIn,,,Payloads/Login_Payload.json,user.id=85 | success=true | user.name=Nikhil chaudhari | user.Projects[0].id=36
+POST,Project,https://uatnode.kolonizer.in/master/api/project,,123,uatnode.kolonizer.in,/master/api/project/,master/project,Projects,Payloads/Project_Payload.json,message=Project created successfully.
+GET,Project_details,https://uatnode.kolonizer.in/master/api/projectOrgwise,,,uatnode.kolonizer.in,/master/api/projectOrgwise,,,,message=All projects retrieved successfully | success=true

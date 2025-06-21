@@ -1,0 +1,176 @@
+{
+  "success": true,
+  "message": "All projects retrieved successfully",
+  "projects": [
+    {
+      "id": 423,
+      "name": "Alpha",
+      "opening_date": "2024-12-01T00:00:00.000Z"
+    },
+    {
+      "id": 196,
+      "name": "Sachin Project",
+      "opening_date": "2024-08-01T00:00:00.000Z"
+    },
+    {
+      "id": 37,
+      "name": "Nikhil",
+      "opening_date": "2024-03-07T00:00:00.000Z"
+    },
+    {
+      "id": 401,
+      "name": "sample project",
+      "opening_date": null
+    },
+    {
+      "id": 382,
+      "name": "new journy",
+      "opening_date": "2025-04-01T00:00:00.000Z"
+    },
+    {
+      "id": 375,
+      "name": "aastha palace",
+      "opening_date": "2025-04-01T00:00:00.000Z"
+    },
+    {
+      "id": 203,
+      "name": "MUSTAQEEM'S PROJECT",
+      "opening_date": null
+    },
+    {
+      "id": 370,
+      "name": "LML AREA",
+      "opening_date": "2025-04-03T00:00:00.000Z"
+    },
+    {
+      "id": 374,
+      "name": "Ayn khan project",
+      "opening_date": null
+    },
+    {
+      "id": 360,
+      "name": "singh apartments",
+      "opening_date": "2025-03-27T00:00:00.000Z"
+    },
+    {
+      "id": 361,
+      "name": "simran apartments",
+      "opening_date": null
+    },
+    {
+      "id": 359,
+      "name": "A Arcade",
+      "opening_date": "2024-06-01T00:00:00.000Z"
+    },
+    {
+      "id": 36,
+      "name": "Demo Project",
+      "opening_date": null
+    },
+    {
+      "id": 351,
+      "name": "ABC Arcade",
+      "opening_date": "2025-03-25T00:00:00.000Z"
+    },
+    {
+      "id": 356,
+      "name": "DK Apartments",
+      "opening_date": "2025-03-01T00:00:00.000Z"
+    },
+    {
+      "id": 354,
+      "name": "nishan tower",
+      "opening_date": "2025-03-24T00:00:00.000Z"
+    },
+    {
+      "id": 350,
+      "name": "RS APARTMENTS",
+      "opening_date": "2025-03-01T00:00:00.000Z"
+    },
+    {
+      "id": 349,
+      "name": "sage part 2",
+      "opening_date": null
+    },
+    {
+      "id": 348,
+      "name": "sage homes",
+      "opening_date": "2025-03-16T00:00:00.000Z"
+    },
+    {
+      "id": 347,
+      "name": "geet apartments",
+      "opening_date": "2025-03-21T00:00:00.000Z"
+    },
+    {
+      "id": 333,
+      "name": "mahir 1 project",
+      "opening_date": "2025-03-18T00:00:00.000Z"
+    },
+    {
+      "id": 342,
+      "name": "sunpark society",
+      "opening_date": "2025-03-01T00:00:00.000Z"
+    },
+    {
+      "id": 341,
+      "name": "Geet homes",
+      "opening_date": "2025-03-18T00:00:00.000Z"
+    },
+    {
+      "id": 340,
+      "name": "Bluesky homes",
+      "opening_date": null
+    },
+    {
+      "id": 339,
+      "name": "geet avenuee",
+      "opening_date": "2025-03-15T00:00:00.000Z"
+    },
+    {
+      "id": 338,
+      "name": "geet avenue",
+      "opening_date": null
+    },
+    {
+      "id": 335,
+      "name": "mahir 2",
+      "opening_date": null
+    },
+    {
+      "id": 332,
+      "name": "mahir project",
+      "opening_date": "2025-03-18T00:00:00.000Z"
+    },
+    {
+      "id": 204,
+      "name": "SAA",
+      "opening_date": "2024-08-01T00:00:00.000Z"
+    },
+    {
+      "id": 287,
+      "name": "godavari enterprises",
+      "opening_date": "2014-12-23T00:00:00.000Z"
+    },
+    {
+      "id": 163,
+      "name": "Gulmohar City",
+      "opening_date": "2014-05-05T00:00:00.000Z"
+    },
+    {
+      "id": 217,
+      "name": "Dream Residency",
+      "opening_date": "2024-09-01T00:00:00.000Z"
+    },
+    {
+      "id": 197,
+      "name": "Golden Horizon Project",
+      "opening_date": "2024-08-01T00:00:00.000Z"
+    },
+    {
+      "id": 165,
+      "name": "nitin goyal",
+      "opening_date": "2024-05-01T00:00:00.000Z"
+    }
+  ]
+}

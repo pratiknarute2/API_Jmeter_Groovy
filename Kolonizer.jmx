@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan">
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+    </TestPlan>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group">
+        <intProp name="ThreadGroup.num_threads">1</intProp>
+        <intProp name="ThreadGroup.ramp_time">1</intProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller">
+          <intProp name="LoopController.loops">-1</intProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Post Condition Project" enabled="true">
+          <stringProp name="IfController.condition">${__javaScript(&quot;${HTTP_REQUEST}&quot; == &quot;POST&quot;)}</stringProp>
+          <boolProp name="IfController.evaluateAll">false</boolProp>
+          <boolProp name="IfController.useExpression">true</boolProp>
+        </IfController>
+        <hashTree>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller Login" enabled="true">
+            <stringProp name="IfController.condition">${__javaScript(&quot;${HTTP_REQUEST}&quot; == &quot;POST&quot; &amp;&amp; &quot;${SCENARIOS}&quot; == &quot;Login&quot;)}</stringProp>
+            <boolProp name="IfController.evaluateAll">false</boolProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+          </IfController>
+          <hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST_${SCENARIOS}" enabled="true">
+              <stringProp name="TestPlan.comments">Sampler&gt; HTTP request</stringProp>
+              <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+              <stringProp name="HTTPSampler.protocol">https</stringProp>
+              <stringProp name="HTTPSampler.path">${END_PATH}</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <stringProp name="HTTPSampler.method">POST</stringProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+                <collectionProp name="Arguments.arguments">
+                  <elementProp name="" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                    <stringProp name="Argument.value">${requestPayload}&#xd;
+</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                  </elementProp>
+                </collectionProp>
+              </elementProp>
+            </HTTPSamplerProxy>
+            <hashTree>
+              <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor_Extract Token" enabled="true">
+                <stringProp name="JSONPostProcessor.referenceNames">authToken</stringProp>
+                <stringProp name="JSONPostProcessor.jsonPathExprs">$.token</stringProp>
+                <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+                <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+              </JSONPostProcessor>
+              <hashTree/>
+              <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
+                <stringProp name="cacheKey">true</stringProp>
+                <stringProp name="filename"></stringProp>
+                <stringProp name="parameters"></stringProp>
+                <stringProp name="script">import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+import org.apache.commons.io.IOUtils
+import java.nio.charset.StandardCharsets
+
+// Get paths and variables
+def payloadPath = vars.get(&quot;PAYLOAD_JSON_PATH&quot;)
+def currentDir = vars.get(&quot;CURRENT_DIR&quot;)
+def payloadFile = new File(currentDir + &quot;/&quot; + payloadPath)
+
+// Check if payload file exists
+if (!payloadFile.exists()) {
+    log.error(&quot;Payload file not found: &quot; + payloadFile.getAbsolutePath())
+    AssertionResult.setFailure(true)
+    AssertionResult.setFailureMessage(&quot;Payload file not found: &quot; + payloadFile.getAbsolutePath())
+    return
+}
+
+// Parse payload
+def payloadContent = payloadFile.text
+def jsonPayload = new JsonSlurper().parseText(payloadContent)
+
+// Replace fields with values from CSV
+def keysToUpdate = [
+    &quot;username&quot;: vars.get(&quot;USERNAME&quot;),
+    &quot;password&quot;: vars.get(&quot;PASSWORD&quot;),
+]
+
+keysToUpdate.each { key, value -&gt;
+    if (value != null &amp;&amp; value.trim() != &quot;&quot;) {
+        jsonPayload[key] = value
+    }
+}
+
+// Save final payload
+def updatedJson = JsonOutput.toJson(jsonPayload)
+vars.put(&quot;requestPayload&quot;, updatedJson)
+</stringProp>
+                <stringProp name="scriptLanguage">groovy</stringProp>
+              </JSR223PreProcessor>
+              <hashTree/>
+            </hashTree>
+            <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="true">
+              <boolProp name="displayJMeterProperties">false</boolProp>
+              <boolProp name="displayJMeterVariables">true</boolProp>
+              <boolProp name="displaySystemProperties">false</boolProp>
+            </DebugSampler>
+            <hashTree/>
+          </hashTree>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller" enabled="true">
+            <stringProp name="IfController.condition">${__javaScript(&quot;${HTTP_REQUEST}&quot; == &quot;POST&quot; &amp;&amp; &quot;${SCENARIOS}&quot; != &quot;Login&quot;)}</stringProp>
+            <boolProp name="IfController.evaluateAll">false</boolProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+          </IfController>
+          <hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST_${SCENARIOS}" enabled="true">
+              <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+              <stringProp name="HTTPSampler.protocol">https</stringProp>
+              <stringProp name="HTTPSampler.path">${END_PATH}</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <stringProp name="HTTPSampler.method">POST</stringProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+                <collectionProp name="Arguments.arguments">
+                  <elementProp name="" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                    <stringProp name="Argument.value">${requestPayload}&#xd;
+</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                  </elementProp>
+                </collectionProp>
+              </elementProp>
+            </HTTPSamplerProxy>
+            <hashTree>
+              <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
+                <stringProp name="cacheKey">true</stringProp>
+                <stringProp name="filename"></stringProp>
+                <stringProp name="parameters"></stringProp>
+                <stringProp name="script">import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
+// Read variables from CSV
+def scenario = vars.get(&quot;SCENARIOS&quot;)
+def payloadPath = vars.get(&quot;PAYLOAD_JSON_PATH&quot;)
+def currentDir = vars.get(&quot;CURRENT_DIR&quot;)
+
+def payloadFile = new File(currentDir + &quot;/&quot; + payloadPath)
+
+// ✅ Validate payload file existence
+if (!payloadFile.exists()) {
+    log.error(&quot;❌ Payload file not found: &quot; + payloadFile.getAbsolutePath())
+    AssertionResult.setFailure(true)
+    AssertionResult.setFailureMessage(&quot;Payload file not found: &quot; + payloadFile.getAbsolutePath())
+    return
+}
+
+// ✅ Parse payload JSON
+def jsonPayload = new JsonSlurper().parseText(payloadFile.text)
+
+// ✅ Scenario-based dynamic update
+if (scenario == &quot;Project&quot;) {
+    // Generate random name
+    def randomProjectName = &quot;Project_&quot; + UUID.randomUUID().toString().replaceAll(&quot;-&quot;, &quot;&quot;).take(8)
+    vars.put(&quot;randomProjectName&quot;, randomProjectName)
+
+    // Inject into payload
+    jsonPayload[&quot;name&quot;] = randomProjectName
+}
+
+// ✅ Replace common fields from CSV (like username, password)
+def keysToUpdate = [
+    &quot;username&quot;: vars.get(&quot;USERNAME&quot;),
+    &quot;password&quot;: vars.get(&quot;PASSWORD&quot;),
+]
+
+keysToUpdate.each { key, value -&gt;
+    if (value != null &amp;&amp; value.trim() != &quot;&quot;) {
+        jsonPayload[key] = value
+    }
+}
+
+// ✅ Store updated payload JSON into JMeter variable
+def updatedJson = JsonOutput.toJson(jsonPayload)
+vars.put(&quot;requestPayload&quot;, updatedJson)
+
+log.info(&quot;✅ Final request payload: &quot; + updatedJson)
+</stringProp>
+                <stringProp name="scriptLanguage">groovy</stringProp>
+              </JSR223PreProcessor>
+              <hashTree/>
+            </hashTree>
+          </hashTree>
+        </hashTree>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="GET Condition" enabled="true">
+          <stringProp name="IfController.condition">${__javaScript(&quot;${HTTP_REQUEST}&quot; == &quot;GET&quot;)}</stringProp>
+          <boolProp name="IfController.evaluateAll">false</boolProp>
+          <boolProp name="IfController.useExpression">true</boolProp>
+        </IfController>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET_${SCENARIOS}" enabled="true">
+            <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">${END_PATH}</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+        </hashTree>
+        <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="CURRENT_DIR" elementType="Argument">
+              <stringProp name="Argument.name">CURRENT_DIR</stringProp>
+              <stringProp name="Argument.value">${__P(user.dir)}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </Arguments>
+        <hashTree/>
+        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
+          <stringProp name="filename">${CURRENT_DIR}/Files/API.csv</stringProp>
+          <stringProp name="variableNames">HTTP_REQUEST,SCENARIOS,API,USERNAME,PASSWORD,HOST,END_PATH,PATH,FEATURE,PAYLOAD_JSON_PATH,ASSERTIONS</stringProp>
+          <boolProp name="ignoreFirstLine">true</boolProp>
+          <stringProp name="delimiter">,</stringProp>
+          <boolProp name="quotedData">false</boolProp>
+          <boolProp name="recycle">false</boolProp>
+          <boolProp name="stopThread">true</boolProp>
+          <stringProp name="shareMode">shareMode.all</stringProp>
+          <stringProp name="fileEncoding"></stringProp>
+        </CSVDataSet>
+        <hashTree/>
+        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+          <collectionProp name="HeaderManager.headers">
+            <elementProp name="" elementType="Header">
+              <stringProp name="Header.name">Content-Type</stringProp>
+              <stringProp name="Header.value">application/json</stringProp>
+            </elementProp>
+            <elementProp name="" elementType="Header">
+              <stringProp name="Header.name">Authorization</stringProp>
+              <stringProp name="Header.value">Bearer ${authToken}</stringProp>
+            </elementProp>
+            <elementProp name="" elementType="Header">
+              <stringProp name="Header.name">path</stringProp>
+              <stringProp name="Header.value">${PATH}</stringProp>
+            </elementProp>
+            <elementProp name="" elementType="Header">
+              <stringProp name="Header.name">feature</stringProp>
+              <stringProp name="Header.value">${FEATURE}</stringProp>
+            </elementProp>
+          </collectionProp>
+        </HeaderManager>
+        <hashTree/>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <JSR223Assertion guiclass="TestBeanGUI" testclass="JSR223Assertion" testname="JSR223 Assertion" enabled="true">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">import groovy.json.JsonSlurper
+
+def response = prev.getResponseDataAsString()
+
+// Check if response is valid JSON (starts with { or [)
+if (!response?.trim()?.startsWith(&quot;{&quot;) &amp;&amp; !response?.trim()?.startsWith(&quot;[&quot;)) {
+    log.warn(&quot;❌ Response is not valid JSON:\n&quot; + response)
+    return
+}
+
+def json
+try {
+    json = new JsonSlurper().parseText(response)
+} catch (Exception e) {
+    AssertionResult.setFailure(true)
+    AssertionResult.setFailureMessage(&quot;❌ Failed to parse response as JSON:\n&quot; + e.message + &quot;\nResponse:\n&quot; + response)
+    return
+}
+
+// Get assertion string from CSV
+def assertionString = vars.get(&quot;ASSERTIONS&quot;)
+if (assertionString == null || assertionString.trim().isEmpty()) {
+    log.info(&quot;✅ No assertions defined. Skipping.&quot;)
+    return
+}
+
+// Split multiple assertions by pipe symbol
+def assertions = assertionString.split(/\s*\|\s*/)
+def errors = []
+
+assertions.each { line -&gt;
+    def (key, expected) = line.trim().split(&apos;=&apos;).collect { it.trim() }
+    def actual
+
+    try {
+        // Handle `.length` as special case
+        def isLengthCheck = key.endsWith(&quot;.length&quot;)
+        def baseKey = isLengthCheck ? key[0..-8] : key
+
+        def keys = baseKey.split(/\./)
+        actual = keys.inject(json) { acc, k -&gt;
+            def matcher = k =~ /^([^\[\]]+)(?:\[(\d+)\])?$/
+            if (!matcher.matches()) {
+                throw new Exception(&quot;Invalid key format: &apos;${k}&apos;&quot;)
+            }
+            def keyPart = matcher[0][1]
+            def indexPart = matcher[0][2]
+
+            if (!(keyPart in acc)) {
+                throw new Exception(&quot;Key &apos;${keyPart}&apos; not found in JSON path, Please check this key &apos;${key}&apos; in CSV file&quot;)
+            }
+
+            def next = acc[keyPart]
+            if (indexPart != null) {
+                def index = indexPart as int
+                if (!(next instanceof List) || next.size() &lt;= index) {
+                    throw new Exception(&quot;Index &apos;${index}&apos; out of bounds for array at &apos;${keyPart}&apos;&quot;)
+                }
+                next = next[index]
+            }
+            return next
+        }
+
+        if (isLengthCheck) {
+            actual = (actual instanceof List || actual instanceof Map) ? actual.size() : -1
+        }
+
+        if (actual.toString() != expected) {
+            errors &lt;&lt; &quot;Assertion failed for &apos;${key}&apos;: expected &apos;${expected}&apos;, got &apos;${actual}&apos;&quot;
+        }
+
+    } catch (Exception e) {
+        errors &lt;&lt; &quot;Assertion error for &apos;${key}&apos;: ${e.message}&quot;
+    }
+}
+
+if (!errors.isEmpty()) {
+    AssertionResult.setFailure(true)
+    AssertionResult.setFailureMessage(errors.join(&apos;\n&apos;))
+}
+</stringProp>
+        </JSR223Assertion>
+        <hashTree/>
+        <Summariser guiclass="SummariserGui" testclass="Summariser" testname="Generate Summary Results" enabled="true"/>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

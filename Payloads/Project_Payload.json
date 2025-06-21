@@ -1,0 +1,12 @@
+{
+  "name": "${randomProjectName}",
+  "sector": "Land",
+  "description": null,
+  "address": "dasdsadssadsad",
+  "total_area": 0,
+  "departments": ["30"],
+  "measurement_unit": "ft2",
+  "nonsaleable": 0,
+  "saleable": 0
+}
+
